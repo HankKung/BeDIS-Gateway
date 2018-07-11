@@ -54,6 +54,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
     if ((ret = xbee_setup(xbee, xbee_mode, xbee_device, xbee_baudrate))
                                                         != XBEE_ENONE) {
         printf("Connection Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
+        //
         return ret;
     }
     printf("xbee Connected\n");
@@ -68,12 +69,13 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
     /* Setup Log Level 0:disable Log, 100:enable Log                         */
     if ((ret = xbee_logLevelSet(*xbee, LogLevel)) != XBEE_ENONE) {
         printf("Setting Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
+        //
         return ret;
     }
     printf("Setting Log Level Success\nLog Level : %d\n",LogLevel);
 
     init_Packet_Queue(pkt_Queue);
-
+    //
     return ret;
 }
 
@@ -92,6 +94,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
     address.addr64_enabled = 1;
 
     printf("Fill Address to the Connector\n");
+    //
     if(pkt_Queue->front->next != NULL){
         printf("pkt_Queue->front->next != NULL\n");
         for(int i=0 ; i < 8 ; i++){
@@ -110,6 +113,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
         if((ret = xbee_conNew(*xbee, con, strMode, NULL)) != XBEE_ENONE) {
             xbee_log(*xbee, -1, "xbee_conNew() returned: %d (%s)", ret
                                                 , xbee_errorToStr(ret));
+                                                //
             return ret;
         }
         printf("Enter Local_AT Mode\n");
@@ -118,6 +122,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
         if((ret = xbee_conNew(*xbee, con, strMode, &address)) != XBEE_ENONE) {
             xbee_log(*xbee, -1, "xbee_conNew() returned: %d (%s)", ret
                                                 , xbee_errorToStr(ret));
+                                                //
             return ret;
         }
         printf("Enter Data Mode\n");
@@ -154,6 +159,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
 
     if(pkt_Queue->front->next != NULL){
         display_pkt("Packet Information", pkt_Queue->front->next);
+        //
     }
 
     printf("Connector Established\n");

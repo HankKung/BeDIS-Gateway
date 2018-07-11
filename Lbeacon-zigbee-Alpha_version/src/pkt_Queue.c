@@ -39,29 +39,32 @@
 
 /* Initialize Queue                                                          */
 void init_Packet_Queue(pkt_ptr pkt_queue) {
+
+    pkt_queue->buffer ={0};
+
     pkt_queue->locker = Lock_Queue;
     pkt_queue->len    = 0;
-    pkt_queue->front = malloc(sizeof(sPkt));
-    memset(pkt_queue->front, 0, sizeof(sPkt));
-    pkt_queue->rear  = pkt_queue->front;
-    pkt_queue->front->next = NULL;
+    //pkt_queue->front = malloc(sizeof(sPkt));
+    //memset(pkt_queue->front, 0, sizeof(sPkt));
+    pkt_queue->rear  = pkt_queue->front = 0;
+    //pkt_queue->front->next = NULL;
     pkt_queue->locker = unLock_Queue;
 }
 
-void Free_Packet_Queue(pkt_ptr pkt_queue){
+// void Free_Packet_Queue(pkt_ptr pkt_queue){
 
-    delallpkt(pkt_queue);
+//     delallpkt(pkt_queue);
 
-    Locker status;
-    do{
-        status = pkt_queue->locker;
-        pkt_queue->locker = Lock_Queue;
-    }while(status != unLock_Queue);
+//     Locker status;
+//     do{
+//         status = pkt_queue->locker;
+//         pkt_queue->locker = Lock_Queue;
+//     }while(status != unLock_Queue);
 
-    free(pkt_queue->front);
-    free(pkt_queue);
-}
-
+//     free(pkt_queue->front);
+//     free(pkt_queue);
+// }
+//change buffer
 /* A function for create new packet in queue                                 */
 void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     Locker status;
@@ -72,7 +75,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
 
     printf("addpkt start\n");
-    pPkt newpkt = malloc(sizeof(sPkt));
+    pPkt newpkt;
     memset(newpkt, 0, sizeof(sPkt));
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
@@ -83,7 +86,8 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     printf("determine queue is null or not\n");
     if(pkt_queue->len == 0) {
         printf("queue is null\n");
-        (pkt_queue->front)->next = newpkt;
+        pkt_queue->buffer[pkt_queue->front+1] = newpkt;
+        //(pkt_queue->front)->next = newpkt;
     }
 
     newpkt -> type = type;
@@ -96,8 +100,10 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     strncpy(newpkt -> content, content, cont_len);
     newpkt->content[cont_len] = '\0';
     printf("Set next NULL\n");
-    newpkt->next = NULL;
+    //newpkt->next = NULL;
     printf("Add to Queue\n");
+    //edit from here
+    //pkt_queue->buffer[pkt_queue->rear]
     (pkt_queue->rear)->next = newpkt;
     printf("Add to Queue\n");
     pkt_queue->rear = newpkt;

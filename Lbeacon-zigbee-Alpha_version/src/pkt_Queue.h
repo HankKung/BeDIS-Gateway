@@ -43,6 +43,7 @@
 
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
+#define BUFFER_SIZE 256
 
 enum {Data, Local_AT};
 
@@ -59,11 +60,14 @@ struct pkt {
 	// Data
 	char *content;
 
-  struct pkt *next;
+  //struct pkt *next;
+  //turn the buffer to static
 };
 
 typedef struct pkt sPkt;
 typedef sPkt* pPkt;
+
+
 
 typedef enum {Lock_Queue,unLock_Queue} Locker;
 
@@ -71,8 +75,10 @@ struct pkt_header {
 
     // front point to the first of thr Pkt Queue
     // rear  point to the end of the Pkt Queue
-    pPkt front;
-    pPkt rear;
+    // front and rear can be just Int. Hank.
+    int front;
+    int rear;
+    sPkt buffer[BUFFER_SIZE]; 
     Locker locker;
     int len;
 };
@@ -83,7 +89,7 @@ typedef spkt_ptr* pkt_ptr;
 /* Create Packet Queue Header */
 void init_Packet_Queue(pkt_ptr pkt_queue);
 
-void Free_Packet_Queue(pkt_ptr pkt_queue);
+// void Free_Packet_Queue(pkt_ptr pkt_queue);
 
 /* Add new Packet to the end of Queue */
 void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content);
